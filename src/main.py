@@ -19,6 +19,13 @@ import asyncio
 import sys
 from pathlib import Path
 
+# Keep Vietnamese CLI output portable when Windows inherits a legacy code page
+# (for example cp1252 in redirected terminals/CI).
+for _stream_name in ("stdout", "stderr"):
+    _stream = getattr(sys, _stream_name, None)
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 # Cho phép chạy ``python src/main.py`` từ gốc repo
 _SRC_DIR = Path(__file__).resolve().parent
 if str(_SRC_DIR) not in sys.path:
